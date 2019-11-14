@@ -23,4 +23,4 @@ Test sending a message to `DEV.QUEUE.1` - browse to:
 ```
 http://localhost:8080/camel/hello?name=mike
 ```
-# ibmmq-tomcat-camel
+
