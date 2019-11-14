@@ -10,7 +10,7 @@
 
     <properties>
         <pooled.jms.version>1.1.0</pooled.jms.version>
-        <camel.version>2.23.4</camel.version>
+        <camel.version>2.24.2</camel.version>
         <spring.version>5.2.1.RELEASE</spring.version>
     </properties>
 
