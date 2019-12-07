@@ -31,7 +31,7 @@
             type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
             factory="com.example.jms.CachingMQConnectionFactory"
             description="JMS Queue Connection Factory for sending messages"
-            HOST="localhost"
+            HOST="qmgr1"
             PORT="1414"
             CHAN="DEV.APP.SVRCONN"
             TRAN="1"
@@ -44,8 +44,34 @@
             type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
             factory="com.example.jms.CachingMQConnectionFactory"
             description="JMS Queue Connection Factory for sending messages"
-            HOST="localhost"
-            PORT="1415"
+            HOST="qmgr2"
+            PORT="1414"
+            CHAN="DEV.APP.SVRCONN"
+            TRAN="1"
+            QMGR="QMGR1"/>
+
+    <Resource
+            name="jms/MyQCF3"
+            global="jms/MyQCF3"
+            auth="Container"
+            type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
+            factory="com.example.jms.CachingMQConnectionFactory"
+            description="JMS Queue Connection Factory for sending messages"
+            HOST="qmgr3"
+            PORT="1414"
+            CHAN="DEV.APP.SVRCONN"
+            TRAN="1"
+            QMGR="QMGR1"/>
+
+    <Resource
+            name="jms/MyQCF4"
+            global="jms/MyQCF4"
+            auth="Container"
+            type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
+            factory="com.example.jms.CachingMQConnectionFactory"
+            description="JMS Queue Connection Factory for sending messages"
+            HOST="qmgr4"
+            PORT="1414"
             CHAN="DEV.APP.SVRCONN"
             TRAN="1"
             QMGR="QMGR1"/>

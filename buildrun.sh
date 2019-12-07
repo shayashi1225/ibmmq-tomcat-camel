@@ -1,4 +1,4 @@
 #!/bin/bash
 mvn clean package
-docker build -f Dockerfile -t ibm-tomcat-camel .
-docker run --privileged --net host --rm ibm-tomcat-camel:latest
+make docker-build
+docker run --privileged --net host --rm quay.io/eformat/ibmmq-tomcat-camel:latest
