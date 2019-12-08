@@ -98,6 +98,8 @@
         <property name="transactionManager" ref="jmstxmgr4"/>
     </bean>
 
+    <bean id="repo" class="org.apache.camel.processor.idempotent.MemoryIdempotentRepository"/>
+
     <camelContext xmlns="http://camel.apache.org/schema/spring">
 
         <errorHandler id="defaultEH">
@@ -164,6 +166,78 @@
                     </transform>
                 </otherwise>
             </choice>
+        </route>
+
+        <route id="consumeRoute11" errorHandlerRef="defaultEH">
+            <from uri="jmsComponent1:queue:DEV.QUEUE.1"/>
+            <log message="Incoming message ${header.JMSMessageID}"/>
+            <idempotentConsumer messageIdRepositoryRef="repo">
+                <header>JMSMessageID</header>
+                <log message="Processing message ${header.JMSMessageID}"/>
+            </idempotentConsumer>
+        </route>
+
+        <route id="consumeRoute12" errorHandlerRef="defaultEH">
+            <from uri="jmsComponent1:queue:DEV.QUEUE.2"/>
+            <log message="Incoming message ${header.JMSMessageID}"/>
+            <idempotentConsumer messageIdRepositoryRef="repo">
+                <header>JMSMessageID</header>
+                <log message="Processing message ${header.JMSMessageID}"/>
+            </idempotentConsumer>
+        </route>
+
+        <route id="consumeRoute21" errorHandlerRef="defaultEH">
+            <from uri="jmsComponent2:queue:DEV.QUEUE.1"/>
+            <log message="Incoming message ${header.JMSMessageID}"/>
+            <idempotentConsumer messageIdRepositoryRef="repo">
+                <header>JMSMessageID</header>
+                <log message="Processing message ${header.JMSMessageID}"/>
+            </idempotentConsumer>
+        </route>
+
+        <route id="consumeRoute22" errorHandlerRef="defaultEH">
+            <from uri="jmsComponent2:queue:DEV.QUEUE.2"/>
+            <log message="Incoming message ${header.JMSMessageID}"/>
+            <idempotentConsumer messageIdRepositoryRef="repo">
+                <header>JMSMessageID</header>
+                <log message="Processing message ${header.JMSMessageID}"/>
+            </idempotentConsumer>
+        </route>
+
+        <route id="consumeRoute31" errorHandlerRef="defaultEH">
+            <from uri="jmsComponent3:queue:DEV.QUEUE.1"/>
+            <log message="Incoming message ${header.JMSMessageID}"/>
+            <idempotentConsumer messageIdRepositoryRef="repo">
+                <header>JMSMessageID</header>
+                <log message="Processing message ${header.JMSMessageID}"/>
+            </idempotentConsumer>
+        </route>
+
+        <route id="consumeRoute32" errorHandlerRef="defaultEH">
+            <from uri="jmsComponent3:queue:DEV.QUEUE.2"/>
+            <log message="Incoming message ${header.JMSMessageID}"/>
+            <idempotentConsumer messageIdRepositoryRef="repo">
+                <header>JMSMessageID</header>
+                <log message="Processing message ${header.JMSMessageID}"/>
+            </idempotentConsumer>
+        </route>
+
+        <route id="consumeRoute41" errorHandlerRef="defaultEH">
+            <from uri="jmsComponent4:queue:DEV.QUEUE.1"/>
+            <log message="Incoming message ${header.JMSMessageID}"/>
+            <idempotentConsumer messageIdRepositoryRef="repo">
+                <header>JMSMessageID</header>
+                <log message="Processing message ${header.JMSMessageID}"/>
+            </idempotentConsumer>
+        </route>
+
+        <route id="consumeRoute42" errorHandlerRef="defaultEH">
+            <from uri="jmsComponent4:queue:DEV.QUEUE.2"/>
+            <log message="Incoming message ${header.JMSMessageID}"/>
+            <idempotentConsumer messageIdRepositoryRef="repo">
+                <header>JMSMessageID</header>
+                <log message="Processing message ${header.JMSMessageID}"/>
+            </idempotentConsumer>
         </route>
 
     </camelContext>

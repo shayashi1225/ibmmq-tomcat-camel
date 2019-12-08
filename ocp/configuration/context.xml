@@ -50,4 +50,30 @@
             TRAN="1"
             QMGR="QMGR1"/>
 
+    <Resource
+            name="jms/MyQCF3"
+            global="jms/MyQCF3"
+            auth="Container"
+            type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
+            factory="com.example.jms.CachingMQConnectionFactory"
+            description="JMS Queue Connection Factory for sending messages"
+            HOST="localhost"
+            PORT="1416"
+            CHAN="DEV.APP.SVRCONN"
+            TRAN="1"
+            QMGR="QMGR1"/>
+
+    <Resource
+            name="jms/MyQCF3"
+            global="jms/MyQCF3"
+            auth="Container"
+            type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
+            factory="com.example.jms.CachingMQConnectionFactory"
+            description="JMS Queue Connection Factory for sending messages"
+            HOST="localhost"
+            PORT="1417"
+            CHAN="DEV.APP.SVRCONN"
+            TRAN="1"
+            QMGR="QMGR1"/>
+
 </Context>
