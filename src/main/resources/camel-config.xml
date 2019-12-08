@@ -17,6 +17,15 @@
         <property name="connectionFactory" ref="qcf1"/>
         <property name="username" value="app"/>
         <property name="password" value=""/>
+        <property name="transactionManager" ref="jmstxmgr1"/>
+    </bean>
+
+    <bean id="jmstxmgr1" class="org.springframework.jms.connection.JmsTransactionManager">
+        <property name="connectionFactory" ref="qcf1"/>
+    </bean>
+
+    <bean id="txpolicy1" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
+        <property name="transactionManager" ref="jmstxmgr1"/>
     </bean>
 
     <bean id="qcf2" class="org.springframework.jndi.JndiObjectFactoryBean">
@@ -30,6 +39,15 @@
         <property name="connectionFactory" ref="qcf2"/>
         <property name="username" value="app"/>
         <property name="password" value=""/>
+        <property name="transactionManager" ref="jmstxmgr2"/>
+    </bean>
+
+    <bean id="jmstxmgr2" class="org.springframework.jms.connection.JmsTransactionManager">
+        <property name="connectionFactory" ref="qcf2"/>
+    </bean>
+
+    <bean id="txpolicy2" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
+        <property name="transactionManager" ref="jmstxmgr2"/>
     </bean>
 
     <bean id="qcf3" class="org.springframework.jndi.JndiObjectFactoryBean">
@@ -43,6 +61,15 @@
         <property name="connectionFactory" ref="qcf3"/>
         <property name="username" value="app"/>
         <property name="password" value=""/>
+        <property name="transactionManager" ref="jmstxmgr3"/>
+    </bean>
+
+    <bean id="jmstxmgr3" class="org.springframework.jms.connection.JmsTransactionManager">
+        <property name="connectionFactory" ref="qcf3"/>
+    </bean>
+
+    <bean id="txpolicy3" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
+        <property name="transactionManager" ref="jmstxmgr3"/>
     </bean>
 
     <bean id="qcf4" class="org.springframework.jndi.JndiObjectFactoryBean">
@@ -52,17 +79,39 @@
         <property name="proxyInterface" value="javax.jms.QueueConnectionFactory"/>
     </bean>
 
+    <bean id="jmsTransactionManager4" class="org.springframework.jms.connection.JmsTransactionManager">
+        <property name="connectionFactory" ref="qcf4"/>
+    </bean>
+
     <bean id="jmsComponent4" class="org.apache.camel.component.jms.JmsComponent">
         <property name="connectionFactory" ref="qcf4"/>
         <property name="username" value="app"/>
         <property name="password" value=""/>
+        <property name="transactionManager" ref="jmstxmgr4"/>
+    </bean>
+
+    <bean id="jmstxmgr4" class="org.springframework.jms.connection.JmsTransactionManager">
+        <property name="connectionFactory" ref="qcf4"/>
+    </bean>
+
+    <bean id="txpolicy4" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
+        <property name="transactionManager" ref="jmstxmgr4"/>
     </bean>
 
     <camelContext xmlns="http://camel.apache.org/schema/spring">
 
-        <route id="helloRoute">
+        <errorHandler id="defaultEH">
+            <redeliveryPolicy maximumRedeliveries="5"
+                              redeliveryDelay="250"
+                              retryAttemptedLogLevel="INFO"
+                              backOffMultiplier="2"
+                              useExponentialBackOff="true"/>
+        </errorHandler>
+
+        <route id="helloRoute" errorHandlerRef="defaultEH">
             <!-- incoming requests from the servlet is routed -->
             <from uri="servlet:hello"/>
+            <!-- transacted ref="txpolicy1"/ -->
             <choice>
                 <when>
                     <!-- is there a header with the key name? -->
@@ -89,9 +138,10 @@
             </choice>
         </route>
 
-        <route id="bonjourRoute">
+        <route id="bonjourRoute" errorHandlerRef="defaultEH">
             <!-- incoming requests from the servlet is routed -->
             <from uri="servlet:bonjour"/>
+            <!-- transacted ref="txpolicy2"/ -->
             <choice>
                 <when>
                     <!-- is there a header with the key name? -->

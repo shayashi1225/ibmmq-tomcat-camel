@@ -8,8 +8,12 @@ IMG := $(REPOSITORY):latest
 docker-login:
 	@docker login -u $(DOCKER_USER) -p $(DOCKER_PASSWORD) $(REGISTRY)
 
+# clean compile
+compile:
+	mvn clean package
+
 # Build the docker image
-docker-build:
+docker-build: compile
 	docker build . -t ${IMG} -f Dockerfile
 
 # Push the docker image

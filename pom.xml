@@ -62,6 +62,12 @@
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <!-- transactions -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
         <!-- ibmmq jars are local -->
         <dependency>
             <groupId>com.ibm.mq</groupId>
