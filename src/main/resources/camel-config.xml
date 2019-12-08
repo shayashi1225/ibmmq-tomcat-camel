@@ -111,7 +111,6 @@
         <route id="helloRoute" errorHandlerRef="defaultEH">
             <!-- incoming requests from the servlet is routed -->
             <from uri="servlet:hello"/>
-            <!-- transacted ref="txpolicy1"/ -->
             <choice>
                 <when>
                     <!-- is there a header with the key name? -->
@@ -141,7 +140,6 @@
         <route id="bonjourRoute" errorHandlerRef="defaultEH">
             <!-- incoming requests from the servlet is routed -->
             <from uri="servlet:bonjour"/>
-            <!-- transacted ref="txpolicy2"/ -->
             <choice>
                 <when>
                     <!-- is there a header with the key name? -->
