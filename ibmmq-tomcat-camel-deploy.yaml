@@ -1,0 +1,286 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    context.xml: |
+      <?xml version='1.0' encoding='utf-8'?>
+      <Context useHttpOnly="true" privileged="false">
+          <!-- Default set of monitored resources. If one of these changes, the    -->
+          <!-- web application will be reloaded.                                   -->
+          <WatchedResource>WEB-INF/web.xml</WatchedResource>
+          <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+
+          <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+          <!--
+          <Manager pathname="" />
+          -->
+
+          <!-- Uncomment this to enable Comet connection tacking (provides events
+               on session expiration as well as webapp lifecycle) -->
+          <!--
+          <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
+          -->
+
+          <!-- ##DATASOURCES## -->
+
+          <!--
+            If you want no JMS Pooling, you can use IBM JMS Classes Directly:
+              type="com.ibm.mq.jms.MQQueueConnectionFactory"
+              factory="com.ibm.mq.jms.MQQueueConnectionFactoryFactory"
+            -->
+
+          <Resource
+                  name="jms/MyQCF1"
+                  global="jms/MyQCF1"
+                  auth="Container"
+                  type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
+                  factory="com.example.jms.CachingMQConnectionFactory"
+                  description="JMS Queue Connection Factory for sending messages"
+                  HOST="qmgr1"
+                  PORT="1414"
+                  CHAN="DEV.APP.SVRCONN"
+                  TRAN="1"
+                  QMGR="QMGR1"/>
+
+          <Resource
+                  name="jms/MyQCF2"
+                  global="jms/MyQCF2"
+                  auth="Container"
+                  type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
+                  factory="com.example.jms.CachingMQConnectionFactory"
+                  description="JMS Queue Connection Factory for sending messages"
+                  HOST="qmgr2"
+                  PORT="1414"
+                  CHAN="DEV.APP.SVRCONN"
+                  TRAN="1"
+                  QMGR="QMGR1"/>
+
+          <Resource
+                  name="jms/MyQCF3"
+                  global="jms/MyQCF3"
+                  auth="Container"
+                  type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
+                  factory="com.example.jms.CachingMQConnectionFactory"
+                  description="JMS Queue Connection Factory for sending messages"
+                  HOST="qmgr3"
+                  PORT="1414"
+                  CHAN="DEV.APP.SVRCONN"
+                  TRAN="1"
+                  QMGR="QMGR1"/>
+
+          <Resource
+                  name="jms/MyQCF4"
+                  global="jms/MyQCF4"
+                  auth="Container"
+                  type="org.messaginghub.pooled.jms.JmsPoolConnectionFactory"
+                  factory="com.example.jms.CachingMQConnectionFactory"
+                  description="JMS Queue Connection Factory for sending messages"
+                  HOST="qmgr4"
+                  PORT="1414"
+                  CHAN="DEV.APP.SVRCONN"
+                  TRAN="1"
+                  QMGR="QMGR1"/>
+
+      </Context>
+  kind: ConfigMap
+  metadata:
+    labels:
+      app: ibmmq-tomcat-camel
+    name: ibmmq-tomcat-camel-ctx
+- apiVersion: v1
+  data:
+    application.properties: |
+      startConsumers=true
+  kind: ConfigMap
+  metadata:
+    labels:
+      app: ibmmq-tomcat-camel
+    name: ibmmq-tomcat-camel-prop
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ibmmq-tomcat-camel
+    name: ibmmq-tomcat-camel
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: quay.io/eformat/ibmmq-tomcat-camel:latest
+      from:
+        kind: DockerImage
+        name: quay.io/eformat/ibmmq-tomcat-camel:latest
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ibmmq-tomcat-camel
+    name: ibmmq-tomcat-camel
+  spec:
+    replicas: 8
+    selector:
+      app: ibmmq-tomcat-camel
+      deploymentconfig: ibmmq-tomcat-camel
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: ibmmq-tomcat-camel
+          deploymentconfig: ibmmq-tomcat-camel
+      spec:
+        containers:
+        - image: ''
+          imagePullPolicy: Always
+          name: ibmmq-tomcat-camel
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          - containerPort: 8778
+            protocol: TCP
+            name: jolokia
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /opt/webserver/conf/context.xml
+            name: ibmmq-tomcat-ctx
+            subPath: context.xml
+          - mountPath: /opt/webserver/webapps/application.properties
+            name: ibmmq-tomcat-prop
+            subPath: application.properties
+          - mountPath: /opt/webserver/webapps/ca.crt
+            name: ibmmq-tomcat-ca
+            subPath: ca.crt
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: ibmmq-tomcat-camel-ctx
+          name: ibmmq-tomcat-ctx
+        - configMap:
+            defaultMode: 420
+            name: ibmmq-tomcat-camel-prop
+          name: ibmmq-tomcat-prop
+        - configMap:
+            defaultMode: 420
+            name: ibmmq-tomcat-camel-ca
+          name: ibmmq-tomcat-ca
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ibmmq-tomcat-camel
+        from:
+          kind: ImageStreamTag
+          name: ibmmq-tomcat-camel:latest
+          namespace: ibmmq-tomcat-camel
+        lastTriggeredImage: quay.io/eformat/ibmmq-tomcat-camel:latest
+      type: ImageChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ibmmq-tomcat-camel
+    name: ibmmq-tomcat-camel
+  spec:
+    clusterIP: 172.30.139.25
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: 8443-tcp
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+    - name: jolokia
+      port: 8778
+      protocol: TCP
+      targetPort: 8778
+    selector:
+      app: ibmmq-tomcat-camel
+      deploymentconfig: ibmmq-tomcat-camel
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: ibmmq-tomcat-camel
+    name: ibmmq-tomcat-camel
+  spec:
+    port:
+      targetPort: 8080-tcp
+    subdomain: ""
+    to:
+      kind: Service
+      name: ibmmq-tomcat-camel
+      weight: 100
+    wildcardPolicy: None
+- apiVersion: v1
+  data:
+    ca.crt: |
+      -----BEGIN CERTIFICATE-----
+      MIIFfjCCBGagAwIBAgISA1vacVV64qdJwQprhPHvax4aMA0GCSqGSIb3DQEBCwUA
+      MEoxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MSMwIQYDVQQD
+      ExpMZXQncyBFbmNyeXB0IEF1dGhvcml0eSBYMzAeFw0xOTExMjUwNTU1NDFaFw0y
+      MDAyMjMwNTU1NDFaMBkxFzAVBgNVBAMTDnJlZGhhdGxhYnMuZGV2MIIBIjANBgkq
+      hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuIcGzTTa/1IrA74yQPVUxEQnZrQEfJAC
+      bgKk841l9uaAq6stOnEaRd2XZhnYJJ1DJ6/lw3GVQGjsLiCYYTDwvg2QhJwYWAEX
+      bOB3XT8jbb+dKWDfwC9v54lAXh6w8E7qw7D9zCw0CjMTsyfEEjeRIInhHAcu7z8V
+      1GcM6lyksbbtH8ZYOhAyzfUomQP7spxGDDwO4AxWWLmHzSErl1NnILodNkDRA+GN
+      EElfEnm3OPSNzB+HNbb3YE0XKL0py2jLCnhnzJuQJjQNzws689ONpXsroKSSRj4R
+      IPIcO/oHhHfpJzmWCc/MtJhx4hYJ022yHDBat0l8aE3+F8IMpoVIsQIDAQABo4IC
+      jTCCAokwDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEF
+      BQcDAjAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBTTroxY48dxp3sR+9HFcTzXq4HN
+      UTAfBgNVHSMEGDAWgBSoSmpjBH3duubRObemRWXv86jsoTBvBggrBgEFBQcBAQRj
+      MGEwLgYIKwYBBQUHMAGGImh0dHA6Ly9vY3NwLmludC14My5sZXRzZW5jcnlwdC5v
+      cmcwLwYIKwYBBQUHMAKGI2h0dHA6Ly9jZXJ0LmludC14My5sZXRzZW5jcnlwdC5v
+      cmcvMEIGA1UdEQQ7MDmCFSouYXBwcy5yZWRoYXRsYWJzLmRldoIQbS5yZWRoYXRs
+      YWJzLmRldoIOcmVkaGF0bGFicy5kZXYwTAYDVR0gBEUwQzAIBgZngQwBAgEwNwYL
+      KwYBBAGC3xMBAQEwKDAmBggrBgEFBQcCARYaaHR0cDovL2Nwcy5sZXRzZW5jcnlw
+      dC5vcmcwggEFBgorBgEEAdZ5AgQCBIH2BIHzAPEAdgDwlaRZ8gDRgkAQLS+TiI6t
+      S/4dR+OZ4dA0prCoqo6ycwAAAW6hWC5DAAAEAwBHMEUCIBjYsH1cmRpW4KweglcO
+      BBRZEgeL0ag3x4ndjwhHrOYTAiEA/LtHDTe78H4C5nEhXpUeWcIfNlPm0kDd9YBR
+      ox6MY/MAdwCyHgXMi6LNiiBOh2b5K7mKJSBna9r6cOeySVMt74uQXgAAAW6hWC40
+      AAAEAwBIMEYCIQCdmcmIbMrt+q2P2b+Q52Ilu5kI+zmO8KlfHf6GYzE23QIhAL/B
+      UtjxXx6gwezQjGbr5fefI32Utdjcb+QwkLRTN9XlMA0GCSqGSIb3DQEBCwUAA4IB
+      AQBHnJkY77PaTX2las8dW4zAhEC4hce1kctaRYFKdbtQPOWNuJLe/z9gBt5OXfs8
+      SCMnH87iVqTQZVG7YYQ1F+rJPJNtz8igl88Jme25ueO0i7j1/pAzXSCIe1nhsXF9
+      ZH8+I4dFfHGtVV9o+FU67t7RsoReY6pGqpdHE9+utqtJkID5ZqNhYP7Z6JS5gYTy
+      rIphIgHUhmN4jiPztm2vCDsTL+ik6a+esFhqefpA+GZ7pf3/l+c/Rk9jAKNqEoXB
+      LvU2XYasDtnUBwu5WDhKkZYNMWj9zTFTieSU2nKqkDV3AEKeVv9Plmc8yfbkBCRf
+      T9+cWvaSbqIm7/9FKiBiFoEN
+      -----END CERTIFICATE-----
+  kind: ConfigMap
+  metadata:
+    name: ibmmq-tomcat-camel-ca
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

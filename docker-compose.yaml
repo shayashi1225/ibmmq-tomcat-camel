@@ -3,6 +3,8 @@ version: '3'
 volumes:
   mqm1:
   mqm2:
+  mqm3:
+  mqm4:
 
 services:
 
@@ -28,6 +30,28 @@ services:
     volumes:
       - mqm2:/mnt/mqm
 
+  qmgr3:
+    image: ibmcom/mq:9
+    ports:
+      - "1416:1414"
+      - "11443:9443"
+    environment:
+      LICENSE: "accept"
+      MQ_QMGR_NAME: "QMGR1"
+    volumes:
+      - mqm3:/mnt/mqm
+
+  qmgr4:
+    image: ibmcom/mq:9
+    ports:
+      - "1417:1414"
+      - "12443:9443"
+    environment:
+      LICENSE: "accept"
+      MQ_QMGR_NAME: "QMGR1"
+    volumes:
+      - mqm4:/mnt/mqm
+
   ibm-tomcat-camel:
     image: quay.io/eformat/ibmmq-tomcat-camel:latest
     privileged: true
@@ -35,4 +59,6 @@ services:
     depends_on:
       - qmgr1
       - qmgr2
+      - qmgr3
+      - qmgr4
 
