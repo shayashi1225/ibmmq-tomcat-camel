@@ -6,6 +6,10 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
+    <bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+        <property name="location" value="file:/opt/webserver/webapps/application.properties"/>
+    </bean>
+
     <bean id="qcf1" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jms/MyQCF1"/>
         <property name="lookupOnStartup" value="false"/>
@@ -168,7 +172,7 @@
             </choice>
         </route>
 
-        <route id="consumeRoute11" errorHandlerRef="defaultEH">
+        <route id="consumeRoute11" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent1:queue:DEV.QUEUE.1"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">
@@ -177,7 +181,7 @@
             </idempotentConsumer>
         </route>
 
-        <route id="consumeRoute12" errorHandlerRef="defaultEH">
+        <route id="consumeRoute12" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent1:queue:DEV.QUEUE.2"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">
@@ -186,7 +190,7 @@
             </idempotentConsumer>
         </route>
 
-        <route id="consumeRoute21" errorHandlerRef="defaultEH">
+        <route id="consumeRoute21" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent2:queue:DEV.QUEUE.1"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">
@@ -195,7 +199,7 @@
             </idempotentConsumer>
         </route>
 
-        <route id="consumeRoute22" errorHandlerRef="defaultEH">
+        <route id="consumeRoute22" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent2:queue:DEV.QUEUE.2"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">
@@ -204,7 +208,7 @@
             </idempotentConsumer>
         </route>
 
-        <route id="consumeRoute31" errorHandlerRef="defaultEH">
+        <route id="consumeRoute31" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent3:queue:DEV.QUEUE.1"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">
@@ -213,7 +217,7 @@
             </idempotentConsumer>
         </route>
 
-        <route id="consumeRoute32" errorHandlerRef="defaultEH">
+        <route id="consumeRoute32" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent3:queue:DEV.QUEUE.2"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">
@@ -222,7 +226,7 @@
             </idempotentConsumer>
         </route>
 
-        <route id="consumeRoute41" errorHandlerRef="defaultEH">
+        <route id="consumeRoute41" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent4:queue:DEV.QUEUE.1"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">
@@ -231,7 +235,7 @@
             </idempotentConsumer>
         </route>
 
-        <route id="consumeRoute42" errorHandlerRef="defaultEH">
+        <route id="consumeRoute42" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent4:queue:DEV.QUEUE.2"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">

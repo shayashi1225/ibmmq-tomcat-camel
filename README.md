@@ -265,8 +265,12 @@ done
 ```
 oc new-app quay.io/eformat/ibmmq-tomcat-camel:latest
 
-oc create configmap ibmmq-tomcat-camel --from-file=context.xml=ocp/dev/context.xml -n ibmmq-tomcat-camel --dry-run -o yaml | oc apply --force -f-
-oc set volume dc/ibmmq-tomcat-camel --add --overwrite --name=ibmmq-tomcat -m /opt/webserver/conf/context.xml --sub-path=context.xml -t configmap --configmap-name=ibmmq-tomcat-camel
+oc create configmap ibmmq-tomcat-camel-ctx --from-file=context.xml=ocp/dev/context.xml --dry-run -o yaml | oc apply --force -f-
+oc set volume dc/ibmmq-tomcat-camel --add --overwrite --name=ibmmq-tomcat-ctx -m /opt/webserver/conf/context.xml --sub-path=context.xml -t configmap --configmap-name=ibmmq-tomcat-camel-ctx
+
+oc create configmap ibmmq-tomcat-camel-prop --from-file=context.xml=ocp/dev/application.properties --dry-run -o yaml | oc apply --force -f-
+oc set volume dc/ibmmq-tomcat-camel --add --overwrite --name=ibmmq-tomcat-prop -m /opt/webserver/webapps/ROOT/WEB-INF/classes/application.properties --sub-path=application.properties -t configmap --configmap-name=ibmmq-tomcat-camel-prop
+
 oc expose svc ibmmq-tomcat-camel
 oc scale dc/ibmmq-tomcat-camel --replicas=8
 ```
