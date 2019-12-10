@@ -22,6 +22,7 @@
         <property name="username" value="app"/>
         <property name="password" value=""/>
         <property name="transactionManager" ref="jmstxmgr1"/>
+        <property name="transacted" value="true" />
     </bean>
 
     <bean id="jmstxmgr1" class="org.springframework.jms.connection.JmsTransactionManager">
@@ -44,6 +45,7 @@
         <property name="username" value="app"/>
         <property name="password" value=""/>
         <property name="transactionManager" ref="jmstxmgr2"/>
+        <property name="transacted" value="true" />
     </bean>
 
     <bean id="jmstxmgr2" class="org.springframework.jms.connection.JmsTransactionManager">
@@ -66,6 +68,7 @@
         <property name="username" value="app"/>
         <property name="password" value=""/>
         <property name="transactionManager" ref="jmstxmgr3"/>
+        <property name="transacted" value="true" />
     </bean>
 
     <bean id="jmstxmgr3" class="org.springframework.jms.connection.JmsTransactionManager">
@@ -92,6 +95,7 @@
         <property name="username" value="app"/>
         <property name="password" value=""/>
         <property name="transactionManager" ref="jmstxmgr4"/>
+        <property name="transacted" value="true" />
     </bean>
 
     <bean id="jmstxmgr4" class="org.springframework.jms.connection.JmsTransactionManager">
@@ -126,12 +130,12 @@
                         <simple>Hello I am ${sysenv.HOSTNAME}. Hello ${header.name} how are you today?</simple>
                     </transform>
                     <setExchangePattern pattern="InOnly"/>
-                    <loadBalance>
+                    <loadBalance inheritErrorHandler="false">
                         <failover roundRobin="true"/>
                         <to uri="jmsComponent1:queue:DEV.QUEUE.1"/>
-                        <to uri="jmsComponent2:queue:DEV.QUEUE.2"/>
+                        <to uri="jmsComponent2:queue:DEV.QUEUE.1"/>
                         <to uri="jmsComponent3:queue:DEV.QUEUE.1"/>
-                        <to uri="jmsComponent4:queue:DEV.QUEUE.2"/>
+                        <to uri="jmsComponent4:queue:DEV.QUEUE.1"/>
                     </loadBalance>
                 </when>
                 <otherwise>
@@ -155,12 +159,12 @@
                         <simple>Bonjour I am ${sysenv.HOSTNAME}. Bonjour ${header.name} how are you today?</simple>
                     </transform>
                     <setExchangePattern pattern="InOnly"/>
-                    <loadBalance>
+                    <loadBalance inheritErrorHandler="false">
                         <failover roundRobin="true"/>
                         <to uri="jmsComponent1:queue:DEV.QUEUE.1"/>
-                        <to uri="jmsComponent2:queue:DEV.QUEUE.2"/>
+                        <to uri="jmsComponent2:queue:DEV.QUEUE.1"/>
                         <to uri="jmsComponent3:queue:DEV.QUEUE.1"/>
-                        <to uri="jmsComponent4:queue:DEV.QUEUE.2"/>
+                        <to uri="jmsComponent4:queue:DEV.QUEUE.1"/>
                     </loadBalance>
                 </when>
                 <otherwise>
@@ -181,26 +185,8 @@
             </idempotentConsumer>
         </route>
 
-        <route id="consumeRoute12" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
-            <from uri="jmsComponent1:queue:DEV.QUEUE.2"/>
-            <log message="Incoming message ${header.JMSMessageID}"/>
-            <idempotentConsumer messageIdRepositoryRef="repo">
-                <header>JMSMessageID</header>
-                <log message="Processing message ${header.JMSMessageID}"/>
-            </idempotentConsumer>
-        </route>
-
         <route id="consumeRoute21" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent2:queue:DEV.QUEUE.1"/>
-            <log message="Incoming message ${header.JMSMessageID}"/>
-            <idempotentConsumer messageIdRepositoryRef="repo">
-                <header>JMSMessageID</header>
-                <log message="Processing message ${header.JMSMessageID}"/>
-            </idempotentConsumer>
-        </route>
-
-        <route id="consumeRoute22" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
-            <from uri="jmsComponent2:queue:DEV.QUEUE.2"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">
                 <header>JMSMessageID</header>
@@ -217,26 +203,8 @@
             </idempotentConsumer>
         </route>
 
-        <route id="consumeRoute32" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
-            <from uri="jmsComponent3:queue:DEV.QUEUE.2"/>
-            <log message="Incoming message ${header.JMSMessageID}"/>
-            <idempotentConsumer messageIdRepositoryRef="repo">
-                <header>JMSMessageID</header>
-                <log message="Processing message ${header.JMSMessageID}"/>
-            </idempotentConsumer>
-        </route>
-
         <route id="consumeRoute41" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
             <from uri="jmsComponent4:queue:DEV.QUEUE.1"/>
-            <log message="Incoming message ${header.JMSMessageID}"/>
-            <idempotentConsumer messageIdRepositoryRef="repo">
-                <header>JMSMessageID</header>
-                <log message="Processing message ${header.JMSMessageID}"/>
-            </idempotentConsumer>
-        </route>
-
-        <route id="consumeRoute42" errorHandlerRef="defaultEH" autoStartup="{{startConsumers}}">
-            <from uri="jmsComponent4:queue:DEV.QUEUE.2"/>
             <log message="Incoming message ${header.JMSMessageID}"/>
             <idempotentConsumer messageIdRepositoryRef="repo">
                 <header>JMSMessageID</header>
