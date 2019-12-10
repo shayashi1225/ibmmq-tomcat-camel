@@ -4,7 +4,7 @@
 
 NUM_REQUESTS=${NUM_REQUESTS:-8000}
 CONCURRENCY=${CONCURRENCY:-50}
-VERBOSITY='-v 0'
+OPTIONS='-v 0 -k -s 120'
 HOST=${HOST:-http://localhost:8080}
 
 # this is pvc (tmp/data) and git repo (performanceresults)
@@ -16,11 +16,11 @@ normal=$(tput sgr0)
 
 echo "${bold}GET 200 camel/hello?name=mike${normal}"
 
-ab ${VERBOSITY} -n ${NUM_REQUESTS} -c ${CONCURRENCY} -g ${OUT_DIR}/get-hello-200.out "${HOST}/camel/hello?name=mike" 2>&1 | tee ${OUT_DIR}/get-hello-200.ab &
+ab ${OPTIONS} -n ${NUM_REQUESTS} -c ${CONCURRENCY} -g ${OUT_DIR}/get-hello-200.out "${HOST}/camel/hello?name=mike" 2>&1 | tee ${OUT_DIR}/get-hello-200.ab &
 
 echo "${bold}GET 200 camel/bonjour?name=mike${normal}"
 
-ab ${VERBOSITY} -n ${NUM_REQUESTS} -c ${CONCURRENCY} -g ${OUT_DIR}/get-bonjour-200.out "${HOST}/camel/bonjour?name=mike" 2>&1 | tee ${OUT_DIR}/get-bonjour-200.ab &
+ab ${OPTIONS} -n ${NUM_REQUESTS} -c ${CONCURRENCY} -g ${OUT_DIR}/get-bonjour-200.out "${HOST}/camel/bonjour?name=mike" 2>&1 | tee ${OUT_DIR}/get-bonjour-200.ab &
 
 echo "waiting for tests to finish ..."
 wait
