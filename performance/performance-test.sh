@@ -2,9 +2,9 @@
 
 #set -x
 
-NUM_REQUESTS=${NUM_REQUESTS:-8000}
-CONCURRENCY=${CONCURRENCY:-50}
-OPTIONS='-v 0 -k -s 120'
+NUM_REQUESTS=${NUM_REQUESTS:-5000}
+CONCURRENCY=${CONCURRENCY:-20}
+OPTIONS='-v 0 -k -r -s 120'
 HOST=${HOST:-http://localhost:8080}
 
 # this is pvc (tmp/data) and git repo (performanceresults)

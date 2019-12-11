@@ -113,3 +113,4 @@ oc import-image --confirm quay.io/eformat/ibmmq-tomcat-camel:latest
 - https://blog.joshdreagan.com/2017/08/14/transactions_and_alternatives_with_camel/
 - http://tmielke.blogspot.com/2012/03/camel-jms-with-transactions-lessons.html?m=1
 - https://camel.apache.org/manual/latest/idempotentConsumer-eip.html
+- http://www.mqseries.net/phpBB2/viewtopic.php?t=76591&sid=4f84a9e35578545408da7d05547c145a

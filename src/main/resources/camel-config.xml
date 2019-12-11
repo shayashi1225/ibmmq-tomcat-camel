@@ -118,7 +118,7 @@
                               useExponentialBackOff="true"/>
         </errorHandler>
 
-        <route id="helloRoute" errorHandlerRef="defaultEH" streamCache="true">
+        <route id="helloRoute" errorHandlerRef="defaultEH">
             <!-- incoming requests from the servlet is routed -->
             <from uri="servlet:hello"/>
             <choice>
@@ -147,7 +147,7 @@
             </choice>
         </route>
 
-        <route id="bonjourRoute" errorHandlerRef="defaultEH" streamCache="true">
+        <route id="bonjourRoute" errorHandlerRef="defaultEH">
             <!-- incoming requests from the servlet is routed -->
             <from uri="servlet:bonjour"/>
             <choice>
