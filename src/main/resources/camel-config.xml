@@ -110,7 +110,7 @@
 
     <camelContext xmlns="http://camel.apache.org/schema/spring">
 
-        <errorHandler id="defaultEH">
+        <errorHandler id="defaultEH" type="DeadLetterChannel" deadLetterUri="log:dead?level=ERROR">
             <redeliveryPolicy maximumRedeliveries="5"
                               redeliveryDelay="250"
                               retryAttemptedLogLevel="INFO"
