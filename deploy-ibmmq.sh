@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-QMGRNO=${QMGRNO:-4}
-
-for x in {1..$QMGRNO}; do
+for x in {1..4}; do
 
 APP_NAME=qmgr$x
 
@@ -135,6 +133,8 @@ spec:
       schedulerName: default-scheduler
       securityContext:
         fsGroup: 888
+      serviceAccount: ibmmq
+      serviceAccountName: ibmmq
       terminationGracePeriodSeconds: 30
       volumes:
       - name: mqm-data

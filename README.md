@@ -98,10 +98,14 @@ oc new-project ibmmq-tomcat-camel
 oc adm policy add-scc-to-user anyuid -z default
 ```
 
-Deploy 4 queue manager pods (requires PVC).
-
+Create service account for MQ that allows anyuid
 ```
-export QMGRNO=4
+oc create sa ibmmq
+oc adm policy add-scc-to-user anyuid -z system:serviceaccount:$(oc project -q):ibmmq
+```
+
+Deploy 4 queue manager pods (requires PVC).
+```
 ./deploy-ibmmq.sh
 ```
 
