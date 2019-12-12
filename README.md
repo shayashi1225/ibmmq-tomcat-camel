@@ -95,7 +95,6 @@ Create new project
 
 ```
 oc new-project ibmmq-tomcat-camel
-oc adm policy add-scc-to-user anyuid -z default
 ```
 
 Create service account for MQ that allows anyuid
