@@ -14,6 +14,8 @@
 - scale from one to many QMGR's
 - jms pooled caching connection factory
 
+![pod-mq.png](images/pod-mq.png)
+
 ### Local
 
 Run locally 
