@@ -55,7 +55,7 @@ Tests results are stored here
 
 ![get-bonjour-200.png](images/get-bonjour-200.png)
 
-Srop QMGR1 pod/container during the test run. The correct number of messages should still be delivered / processed - you can checkl the counts at the end of the test run (remember to start qmgr1 again so you can count what was delivered).
+Stop QMGR1 pod/container during the test run. The correct number of messages should still be delivered / processed - you can checkl the counts at the end of the test run (remember to start qmgr1 again so you can count what was delivered).
 ```
 docker-compose stop qmgr1
 ```
