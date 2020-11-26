@@ -7,6 +7,8 @@ CONCURRENCY=${CONCURRENCY:-20}
 OPTIONS='-v 0 -k -r -s 120'
 HOST=${HOST:-http://localhost:8080}
 
+SCRIPT_DIR=$(cd $(dirname $0);pwd)
+
 # this is pvc (tmp/data) and git repo (performanceresults)
 OUT_DIR=/tmp/data/performanceresults/`date +%Y-%m-%d-%H-%M-%S`
 mkdir -p ${OUT_DIR}
@@ -30,7 +32,7 @@ cd ${OUT_DIR}
 ls *.out | sed -e "s/.out//" > list
 for i in `cat list` ; do
    sed -e "s/INPUTFILE/$i/" -e "s/OUTPUTFILE/$i/" \
-   /home/mike/git/ibmmq-tomcat-camel/performance/plot.gnu | gnuplot
+   ${SCRIPT_DIR}/plot.gnu | gnuplot
 done
 rm list
 
